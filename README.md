@@ -16,10 +16,11 @@ The ER diagram below is written in Mermaid, which GitHub can render directly in 
 
 ```mermaid
 erDiagram
-    PATIENTS ||--o{ APPOINTMENTS : books
-    DOCTORS ||--o{ APPOINTMENTS : attends
-    APPOINTMENTS ||--o{ PRESCRIPTIONS : generates
-    APPOINTMENTS ||--|| BILLING : has
+
+    PATIENTS ||--o{ APPOINTMENTS : "1 : N"
+    DOCTORS ||--o{ APPOINTMENTS : "1 : N"
+    APPOINTMENTS ||--o{ PRESCRIPTIONS : "1 : N"
+    APPOINTMENTS ||--o| BILLING : "1 : 1"
 
     PATIENTS {
         INT Patient_ID PK
@@ -69,7 +70,7 @@ erDiagram
 - **Patients → Appointments (1:M):** A patient can book multiple appointments; each appointment references one patient.
 - **Doctors → Appointments (1:M):** A doctor can attend multiple appointments; each appointment references one doctor.
 - **Appointments → Prescriptions (1:M):** An appointment can have multiple prescription records; each prescription belongs to one appointment.
-- **Appointments → Billing (1:1, intended design):** The project design specifies one bill per appointment. To enforce this cardinality in MySQL, `Billing.Appointment_ID` should also have a `UNIQUE` constraint; a foreign key alone does not enforce one-to-one cardinality.
+- **Appointments → Billing (1:1, optional billing record):** The ERD uses `APPOINTMENTS ||--o| BILLING`, meaning an appointment may have zero or one billing record, while each billing record belongs to exactly one appointment. To prevent multiple bills for the same appointment in MySQL, `Billing.Appointment_ID` should have a `UNIQUE` constraint; a foreign key alone does not enforce one-to-one cardinality.
 
 ## Database Schema
 
@@ -161,5 +162,4 @@ Add the two SQL files to the repository if you want the project to be runnable f
 ---
 
 *Educational SQL project: Hospital Patient Management System (MediTrack).*
-
 
